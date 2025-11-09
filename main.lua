@@ -153,6 +153,7 @@ local function removeMonsterESP(mon)
 	Monster_Drawings[mon] = nil
 	KnownMonsters[mon] = nil
 
+	normalnotif()
 	notifytext("✅ Monster despawned: " .. (info and info.label or "?"), Color3.fromRGB(100,255,100), 2)
 end
 
@@ -173,6 +174,8 @@ local function removeBatteryESP(obj)
 	if not esp then return end
 	for _,v in pairs(esp) do safeRemove(v) end
 	Battery_Drawings[obj] = nil
+	notifytext("🔋 Battery gone.", Color3.fromRGB(255,143,74), 3)
+	normalnotif()
 	KnownBatteries[obj] = nil
 end
 
