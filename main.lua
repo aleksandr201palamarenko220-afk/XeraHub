@@ -391,6 +391,9 @@ RunService.RenderStepped:Connect(function()
 			pos = (mon.PrimaryPart and mon.PrimaryPart.Position)
 				or (mon:FindFirstChild("torso") and mon.torso.Position)
 		end
+		if esp.Label == "A-40" and mon.Parent then
+			pos = mon.Parent.PrimaryPart.Position
+		end
 		if not pos then continue end
 
 		local screen, vis = Camera:WorldToViewportPoint(pos)
