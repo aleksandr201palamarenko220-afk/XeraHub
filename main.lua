@@ -132,6 +132,7 @@ local MonsterNames = {
 	["monster2"] = {label = "A-120/A-200", color = Color3.fromRGB(255, 120, 0)},
 	["Spirit"] = {label = "A-100", color = Color3.fromRGB(140, 0, 255)},
 	["handdebris"] = {label = "A-250", color = Color3.fromRGB(255, 0, 0)},
+	["jack"] = {label = "A-40", color = Color3.fromRGB(200, 200, 200)},
 }
 
 local function highlight(obj, color)
@@ -210,17 +211,22 @@ end)
 workspace.rooms.DescendantAdded:Connect(function(child)
 	if child:IsA("Model") and child.Name == "battery" then
 		addBatteryESP(child)
-	elseif child.Name == "jack" then
-		higlight(child.Parent,Color3.fromRGB(200, 200, 200))
+	elseif MonsterNames[obj.Name] then
+		task.spawn(function()
+		task.wait(0.15)
+		addMonsterESP(obj)
+		end)
 	end	
 end)
 
 workspace.DescendantRemoving:Connect(function(obj)
+	task.spawn(function()
 	if MonsterNames[obj.Name] then
 		removeMonsterESP(obj)
 	elseif obj.Name == "battery" then
 		removeBatteryESP(obj)
 	end
+	end)
 end)
 
 ------------------------------------------------------------
