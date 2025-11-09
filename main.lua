@@ -368,7 +368,7 @@ RunService.RenderStepped:Connect(function()
 		esp.Name.Text = esp.Label
 		esp.Name.Position = Vector2.new(screen.X, screen.Y + size/2 + 10)
 		esp.Name.Color = MonsterSettings[esp.Label].NameColor
-		esp.name.Visible = MonsterSettings[esp.Label].NameEnabled
+		esp.Name.Visible = MonsterSettings[esp.Label].NameEnabled
 
 		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 			local dist = (LocalPlayer.Character.HumanoidRootPart.Position - pos).Magnitude
