@@ -1,5 +1,5 @@
 --[[======================================================
-   ⚙️ XERA HUB — MONSTER & BATTERY ESP (FIXED V0.2)
+   ⚙️ XERA HUB — MONSTER & BATTERY ESP (V0.3)
    by Nobody
 ========================================================]]
 
@@ -15,15 +15,15 @@ local LocalPlayer = Players.LocalPlayer
 
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local LHRP = Character:WaitForChild("HumanoidRootPart", 10)
-if not LHRP then
-	warn("HumanoidRootPart not found — light disabled")
-else
-	local PointLight = Instance.new("PointLight")
-	PointLight.Name = "FakeLight"
+
+local PointLight = Instance.new("PointLight")
+PointLight.Name = "ESP_Light"
+PointLight.Range = 60
+PointLight.Brightness = 2
+PointLight.Shadows = false
+PointLight.Enabled = true
+if LHRP then
 	PointLight.Parent = LHRP
-	PointLight.Range = 60
-	PointLight.Brightness = 2
-	PointLight.Shadows = false
 end
 
 ------------------------------------------------------------
@@ -66,12 +66,14 @@ local function normalnotif() playSound(4590662766) end
 ------------------------------------------------------------
 local Monster_Enabled = true
 local Battery_Enabled = true
+local Light_Enabled = true
 
 local Monster_Drawings = {}
 local Battery_Drawings = {}
 local KnownMonsters = {}
 local KnownBatteries = {}
 local MonsterSettings = {}
+local BatterySettings = {}
 
 ------------------------------------------------------------
 -- 🎨 Drawing Helper
@@ -200,11 +202,11 @@ workspace.DescendantRemoving:Connect(function(obj)
 end)
 
 ------------------------------------------------------------
--- 🧠 ESP Tab
+-- 🧠 ESP Tabs
 ------------------------------------------------------------
 local ESP_Tab = Window:CreateTab("ESP")
-ESP_Tab:CreateSection("Entities")
 
+ESP_Tab:CreateSection("Monsters")
 ESP_Tab:CreateToggle({
 	Name = "Monster ESP",
 	CurrentValue = true,
@@ -275,17 +277,105 @@ for _,monster in pairs(MonsterNames) do
 	})
 end
 
-ESP_Tab:CreateSection("Batteries")
-ESP_Tab:CreateToggle({
-	Name = "Battery ESP",
+------------------------------------------------------------
+-- 🔋 Battery ESP Tab
+------------------------------------------------------------
+local BatteryTab = Window:CreateTab("Battery ESP")
+BatteryTab:CreateSection("Battery Settings")
+
+BatterySettings = {
+	TracerEnabled = true,
+	NameEnabled = true,
+	DistanceEnabled = true,
+	BoxEnabled = true,
+	Color = Color3.fromRGB(255,143,74)
+}
+
+BatteryTab:CreateToggle({
+	Name = "Battery ESP Enabled",
 	CurrentValue = true,
-	Callback = function(v)
-		Battery_Enabled = v
+	Callback = function(Value)
+		Battery_Enabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Box",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.BoxEnabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Tracer",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.TracerEnabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Name",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.NameEnabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Distance",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.DistanceEnabled = Value
+	end
+})
+
+BatteryTab:CreateColorPicker({
+	Name = "Battery Color",
+	Color = BatterySettings.Color,
+	Callback = function(Value)
+		BatterySettings.Color = Value
 	end
 })
 
 ------------------------------------------------------------
--- 🔁 Render Update (Monsters + Batteries)
+-- 💡 Light Control
+------------------------------------------------------------
+local LightTab = Window:CreateTab("Lighting")
+LightTab:CreateSection("PointLight")
+
+LightTab:CreateToggle({
+	Name = "Enable Light",
+	CurrentValue = true,
+	Callback = function(Value)
+		Light_Enabled = Value
+		PointLight.Enabled = Value
+	end
+})
+
+LightTab:CreateSlider({
+	Name = "Light Brightness",
+	Range = {0, 5},
+	Increment = 0.1,
+	CurrentValue = 2,
+	Callback = function(Value)
+		PointLight.Brightness = Value
+	end
+})
+
+LightTab:CreateSlider({
+	Name = "Light Range",
+	Range = {10, 100},
+	Increment = 5,
+	CurrentValue = 60,
+	Callback = function(Value)
+		PointLight.Range = Value
+	end
+})
+
+------------------------------------------------------------
+-- 🔁 Render Update
 ------------------------------------------------------------
 RunService.RenderStepped:Connect(function()
 	for mon, data in pairs(Monster_Drawings) do
@@ -308,7 +398,6 @@ RunService.RenderStepped:Connect(function()
 		esp.Name.Visible = visible and settings.NameEnabled
 		esp.Distance.Visible = visible and settings.DistanceEnabled
 		esp.Tracer.Visible = visible and settings.TracerEnabled
-
 		if not visible then continue end
 
 		local size = 2500 / math.max(screen.Z, 1)
@@ -341,21 +430,20 @@ RunService.RenderStepped:Connect(function()
 		local screen, vis = Camera:WorldToViewportPoint(pos)
 		local visible = vis and Battery_Enabled
 
-		esp.Box.Visible = visible
-		esp.Name.Visible = visible
-		esp.Distance.Visible = visible
-		esp.Tracer.Visible = visible
-
+		esp.Box.Visible = visible and BatterySettings.BoxEnabled
+		esp.Name.Visible = visible and BatterySettings.NameEnabled
+		esp.Distance.Visible = visible and BatterySettings.DistanceEnabled
+		esp.Tracer.Visible = visible and BatterySettings.TracerEnabled
 		if not visible then continue end
 
 		local size = 800 / math.max(screen.Z, 1)
 		esp.Box.Size = Vector2.new(size/2, size/2)
 		esp.Box.Position = Vector2.new(screen.X - size/4, screen.Y - size/4)
-		esp.Box.Color = esp.Color
+		esp.Box.Color = BatterySettings.Color
 
 		esp.Name.Text = "Battery"
 		esp.Name.Position = Vector2.new(screen.X, screen.Y + size/2 + 8)
-		esp.Name.Color = esp.Color
+		esp.Name.Color = BatterySettings.Color
 
 		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 			local dist = (LocalPlayer.Character.HumanoidRootPart.Position - pos).Magnitude
@@ -367,6 +455,6 @@ RunService.RenderStepped:Connect(function()
 		local bottom = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y - 50)
 		esp.Tracer.From = bottom
 		esp.Tracer.To = Vector2.new(screen.X, screen.Y)
-		esp.Tracer.Color = esp.Color
+		esp.Tracer.Color = BatterySettings.Color
 	end
 end)
