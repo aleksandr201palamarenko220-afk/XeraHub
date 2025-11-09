@@ -1,9 +1,10 @@
 --[[======================================================
-   ⚙️ XERA HUB — MONSTER & BATTERY ESP (V0.1)
+   ⚙️ XERA HUB — MONSTER & BATTERY ESP (FIXED V0.2)
    by Nobody
 ========================================================]]
 
 repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer
+
 ------------------------------------------------------------
 -- 🧩 Services
 ------------------------------------------------------------
@@ -13,12 +14,17 @@ local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local LHRP = Character:FindFirstChild("HumanoidRootPart")
-local PointLight = Instance.new("PointLight")
-PointLight.Parent = LHRP
-PointLight.Range = 60
-PointLight.Brightness = 2
-PointLight.Shadows = false
+local LHRP = Character:WaitForChild("HumanoidRootPart", 10)
+if not LHRP then
+	warn("HumanoidRootPart not found — light disabled")
+else
+	local PointLight = Instance.new("PointLight")
+	PointLight.Name = "FakeLight"
+	PointLight.Parent = LHRP
+	PointLight.Range = 60
+	PointLight.Brightness = 2
+	PointLight.Shadows = false
+end
 
 ------------------------------------------------------------
 -- 🪟 Rayfield GUI
@@ -36,12 +42,11 @@ local Window = Rayfield:CreateWindow({
 ------------------------------------------------------------
 -- 🔔 Notifications
 ------------------------------------------------------------
-
 local function notifytext(text, rgb, dur)
 	Rayfield:Notify({
   	 Title = "Xera notification",
   	 Content = text,
-  	 Duration = dur,
+  	 Duration = dur or 3,
 	})
 end
 
@@ -55,7 +60,6 @@ end
 
 local function alertnotif() playSound(6176997734) end
 local function normalnotif() playSound(4590662766) end
-local function pnevnotif() playSound(8509804480) end
 
 ------------------------------------------------------------
 -- ⚙️ Настройки ESP
@@ -67,7 +71,6 @@ local Monster_Drawings = {}
 local Battery_Drawings = {}
 local KnownMonsters = {}
 local KnownBatteries = {}
-
 local MonsterSettings = {}
 
 ------------------------------------------------------------
@@ -144,16 +147,11 @@ local function removeMonsterESP(mon)
 	if not data then return end
 	local esp, info = data.esp, data.info
 
-	for _,v in pairs(esp) do
-		safeRemove(v)
-	end
+	for _,v in pairs(esp) do safeRemove(v) end
 	Monster_Drawings[mon] = nil
 	KnownMonsters[mon] = nil
 
-	alertnotif()
-	if info then
-		notifytext("✅ Monster despawned: " .. info.label, Color3.fromRGB(100,255,100), 2)
-	end
+	notifytext("✅ Monster despawned: " .. (info and info.label or "?"), Color3.fromRGB(100,255,100), 2)
 end
 
 ------------------------------------------------------------
@@ -171,45 +169,34 @@ end
 local function removeBatteryESP(obj)
 	local esp = Battery_Drawings[obj]
 	if not esp then return end
-	for _,v in pairs(esp) do
-		safeRemove(v)
-	end
+	for _,v in pairs(esp) do safeRemove(v) end
 	Battery_Drawings[obj] = nil
 	KnownBatteries[obj] = nil
-	notifytext("🔋 Battery removed.", Color3.fromRGB(255,0,0), 1)
 end
 
 ------------------------------------------------------------
 -- 🔍 Entity Registration
 ------------------------------------------------------------
 workspace.ChildAdded:Connect(function(obj)
-	if MonsterNames[obj.Name] then
-		addMonsterESP(obj)
-	end
+	if MonsterNames[obj.Name] then addMonsterESP(obj) end
 end)
 
-workspace.rooms.DescendantAdded:Connect(function(child)
+workspace.DescendantAdded:Connect(function(child)
 	if child:IsA("Model") and child.Name == "battery" then
-		task.spawn(function()
-		task.wait(0.15)
+		task.wait(0.2)
 		addBatteryESP(child)
-		end)
-	elseif MonsterNames[obj.Name] then
-		task.spawn(function()
-		task.wait(0.15)
-		addMonsterESP(obj)
-		end)
+	elseif MonsterNames[child.Name] then
+		task.wait(0.2)
+		addMonsterESP(child)
 	end	
 end)
 
 workspace.DescendantRemoving:Connect(function(obj)
-	task.spawn(function()
 	if MonsterNames[obj.Name] then
 		removeMonsterESP(obj)
 	elseif obj.Name == "battery" then
 		removeBatteryESP(obj)
 	end
-	end)
 end)
 
 ------------------------------------------------------------
@@ -221,78 +208,71 @@ ESP_Tab:CreateSection("Entities")
 ESP_Tab:CreateToggle({
 	Name = "Monster ESP",
 	CurrentValue = true,
-	Callback = function(v)
-		Monster_Enabled = v
-	end
+	Callback = function(v) Monster_Enabled = v end
 })
 
-for _,monster in MonsterNames do
+for _,monster in pairs(MonsterNames) do
 	ESP_Tab:CreateSection(monster.label)
-	MonsterSettings[monster.label] = {}
-	MonsterSettings[monster.label].TracerEnabled = true
-	MonsterSettings[monster.label].NameEnabled = true
-	MonsterSettings[monster.label].DistanceEnabled = true
-	MonsterSettings[monster.label].BoxEnabled = true
-	MonsterSettings[monster.label].BoxColor = monster.color
-	MonsterSettings[monster.label].TracerColor = monster.color
-	MonsterSettings[monster.label].NameColor = monster.color
-	MonsterSettings[monster.label].DistanceColor = monster.color
+	MonsterSettings[monster.label] = {
+		TracerEnabled = true,
+		NameEnabled = true,
+		DistanceEnabled = true,
+		BoxEnabled = true,
+		BoxColor = monster.color,
+		TracerColor = monster.color,
+		NameColor = monster.color,
+		DistanceColor = Color3.fromRGB(180,180,180),
+	}
 
 	ESP_Tab:CreateToggle({
-	Name = monster.label.." Box",
-	CurrentValue = true,
-	Callback = function(Value)
-		MonsterSettings[monster.label].BoxEnabled = Value
-	end})
-
+		Name = monster.label.." Box",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].BoxEnabled = Value
+		end
+	})
 	ESP_Tab:CreateColorPicker({
-    Name = monster.label.." BoxColor",
-    Color = monster.color,
-    Callback = function(Value)
-		MonsterSettings[monster.label].BoxColor = Value
-    end})
-
+		Name = monster.label.." BoxColor",
+		Color = monster.color,
+		Callback = function(Value)
+			MonsterSettings[monster.label].BoxColor = Value
+		end
+	})
 	ESP_Tab:CreateToggle({
-	Name = monster.label.." Tracer",
-	CurrentValue = true,
-	Callback = function(Value)
-		MonsterSettings[monster.label].TracerEnabled = Value
-	end})
-
+		Name = monster.label.." Tracer",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].TracerEnabled = Value
+		end
+	})
 	ESP_Tab:CreateColorPicker({
-    Name = monster.label.." TracerColor",
-    Color = monster.color,
-    Callback = function(Value)
-		MonsterSettings[monster.label].TracerColor = Value
-    end})
-
+		Name = monster.label.." TracerColor",
+		Color = monster.color,
+		Callback = function(Value)
+			MonsterSettings[monster.label].TracerColor = Value
+		end
+	})
 	ESP_Tab:CreateToggle({
-	Name = monster.label.." Name",
-	CurrentValue = true,
-	Callback = function(Value)
-		MonsterSettings[monster.label].NameEnabled = Value
-	end})
-
+		Name = monster.label.." Name",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].NameEnabled = Value
+		end
+	})
 	ESP_Tab:CreateColorPicker({
-    Name = monster.label.." NameColor",
-    Color = monster.color,
-    Callback = function(Value)
-		MonsterSettings[monster.label].NameColor = Value
-    end})
-
+		Name = monster.label.." NameColor",
+		Color = monster.color,
+		Callback = function(Value)
+			MonsterSettings[monster.label].NameColor = Value
+		end
+	})
 	ESP_Tab:CreateToggle({
-	Name = monster.label.." Distance",
-	CurrentValue = true,
-	Callback = function(Value)
-		MonsterSettings[monster.label].DistanceEnabled = Value
-	end})
-
-	ESP_Tab:CreateColorPicker({
-    Name = monster.label.." DistanceColor",
-    Color = Color3.fromRGB(180,180,180),
-    Callback = function(Value)
-		MonsterSettings[monster.label].DistanceColor = Value
-    end})
+		Name = monster.label.." Distance",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].DistanceEnabled = Value
+		end
+	})
 end
 
 ESP_Tab:CreateSection("Batteries")
@@ -303,83 +283,61 @@ ESP_Tab:CreateToggle({
 		Battery_Enabled = v
 	end
 })
-local BrightTab = Window:CreateTab("Bright")
-BrightTab:CreateToggle({
-	Name = "Brightness",
-	CurrentValue = true,
-	Callback = function(v)
-		PointLight.Enabled = v
-	end
-})
 
 ------------------------------------------------------------
 -- 🔁 Render Update (Monsters + Batteries)
 ------------------------------------------------------------
 RunService.RenderStepped:Connect(function()
-	-- 👾 MONSTERS
 	for mon, data in pairs(Monster_Drawings) do
 		local esp = data.esp
-		if not mon or not mon.Parent then
-			removeMonsterESP(mon)
-			continue
-		end
+		if not mon or not mon.Parent then removeMonsterESP(mon) continue end
 
 		local pos
-		if mon:IsA("BasePart") then
-			pos = mon.Position
+		if mon:IsA("BasePart") then pos = mon.Position
 		elseif mon:IsA("Model") then
 			pos = (mon.PrimaryPart and mon.PrimaryPart.Position)
 				or (mon:FindFirstChild("torso") and mon.torso.Position)
-		end
-		if esp.Label == "A-40" then
-			pos = mon.Parent.PrimaryPart.Position
 		end
 		if not pos then continue end
 
 		local screen, vis = Camera:WorldToViewportPoint(pos)
 		local visible = vis and Monster_Enabled
+		local settings = MonsterSettings[esp.Label] or {}
 
-		esp.Box.Visible = visible
-		esp.Name.Visible = visible
-		esp.Distance.Visible = visible
-		esp.Tracer.Visible = visible
+		esp.Box.Visible = visible and settings.BoxEnabled
+		esp.Name.Visible = visible and settings.NameEnabled
+		esp.Distance.Visible = visible and settings.DistanceEnabled
+		esp.Tracer.Visible = visible and settings.TracerEnabled
+
 		if not visible then continue end
 
 		local size = 2500 / math.max(screen.Z, 1)
 		esp.Box.Size = Vector2.new(size/2, size)
 		esp.Box.Position = Vector2.new(screen.X - size/4, screen.Y - size/2)
-		esp.Box.Color = MonsterSettings[esp.Label].BoxColor
-		esp.Box.Visible = MonsterSettings[esp.Label].BoxEnabled
+		esp.Box.Color = settings.BoxColor
 
 		esp.Name.Text = esp.Label
 		esp.Name.Position = Vector2.new(screen.X, screen.Y + size/2 + 10)
-		esp.Name.Color = MonsterSettings[esp.Label].NameColor
-		esp.Name.Visible = MonsterSettings[esp.Label].NameEnabled
+		esp.Name.Color = settings.NameColor
 
 		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
 			local dist = (LocalPlayer.Character.HumanoidRootPart.Position - pos).Magnitude
 			esp.Distance.Text = string.format("[%.1f m]", dist)
 			esp.Distance.Position = Vector2.new(screen.X, screen.Y + size/2 + 25)
-			esp.Distance.Color = MonsterSettings[esp.Label].DistanceColor
-			esp.Distance.Visible = MonsterSettings[esp.Label].DistanceEnabled
+			esp.Distance.Color = settings.DistanceColor
 		end
 
 		local bottom = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y - 50)
 		esp.Tracer.From = bottom
 		esp.Tracer.To = Vector2.new(screen.X, screen.Y)
-		esp.Tracer.Color = MonsterSettings[esp.Label].TracerColor
-		esp.Tracer.Visible = MonsterSettings[esp.Label].TracerEnabled
+		esp.Tracer.Color = settings.TracerColor
 	end
 
-	-- 🔋 BATTERIES
 	for obj, esp in pairs(Battery_Drawings) do
-		if not obj or not obj.Parent then
-			removeBatteryESP(obj)
-			continue
-		end
-
+		if not obj or not obj.Parent then removeBatteryESP(obj) continue end
 		local pos = obj:IsA("BasePart") and obj.Position or (obj.PrimaryPart and obj.PrimaryPart.Position)
 		if not pos then continue end
+
 		local screen, vis = Camera:WorldToViewportPoint(pos)
 		local visible = vis and Battery_Enabled
 
@@ -387,6 +345,7 @@ RunService.RenderStepped:Connect(function()
 		esp.Name.Visible = visible
 		esp.Distance.Visible = visible
 		esp.Tracer.Visible = visible
+
 		if not visible then continue end
 
 		local size = 800 / math.max(screen.Z, 1)
