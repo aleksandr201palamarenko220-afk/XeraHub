@@ -156,11 +156,6 @@ local function addMonsterESP(mon)
 
 	alertnotif()
 	notifytext("⚠ Monster spawned: " .. info.label, info.color, 3)
-
-	if mon.Name == "jack" then
-		notifytext("👁 A-40 detected! Highlighting lockers...", Color3.fromRGB(200,200,200), 4)
-		highlight(mon.Parent, Color3.fromRGB(255,255,255))
-	end
 end
 
 local function removeMonsterESP(mon)
@@ -322,7 +317,7 @@ ESP_Tab:CreateToggle({
 })
 local BrightTab = Window:CreateTab("Bright")
 BrightTab:CreateToggle({
-	Name = "Battery ESP",
+	Name = "Brightness",
 	CurrentValue = true,
 	Callback = function(v)
 		PointLight.Enabled = v
