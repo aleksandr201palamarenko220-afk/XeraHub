@@ -212,8 +212,6 @@ workspace.rooms.DescendantAdded:Connect(function(child)
 		addBatteryESP(child)
 	elseif child.Name == "jack" then
 		higlight(child.Parent,Color3.fromRGB(200, 200, 200))
-		alertnotif()
-		notifytext("⚠ Monster spawned: A-40", info.color, 3)
 	end	
 end)
 
