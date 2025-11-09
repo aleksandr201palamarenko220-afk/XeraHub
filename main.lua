@@ -381,9 +381,8 @@ RunService.RenderStepped:Connect(function()
 		local bottom = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y - 50)
 		esp.Tracer.From = bottom
 		esp.Tracer.To = Vector2.new(screen.X, screen.Y)
-		esp.Tracer.Color = esp.Color
 		esp.Tracer.Color = MonsterSettings[esp.Label].TracerColor
-		esp.Distance.Visible = MonsterSettings[esp.Label].TracerEnabled
+		esp.Tracer.Visible = MonsterSettings[esp.Label].TracerEnabled
 	end
 
 	-- 🔋 BATTERIES
