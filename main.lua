@@ -1,5 +1,5 @@
 --[[======================================================
-   ⚙️ XERA HUB — MONSTER & BATTERY ESP (V0.1)
+   ⚙️ XERA HUB — MONSTER & BATTERY ESP (STABLE CLEANUP)
    by Nobody
 ========================================================]]
 
@@ -22,6 +22,9 @@ PointLight.Brightness = 2
 PointLight.Shadows = false
 PointLight.Name = "FakeLight"
 
+------------------------------------------------------------
+-- 🪟 Rayfield GUI
+------------------------------------------------------------
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local Window = Rayfield:CreateWindow({
@@ -32,6 +35,9 @@ local Window = Rayfield:CreateWindow({
 	ToggleUIKeybind = "U",
 })
 
+------------------------------------------------------------
+-- 🔔 Notifications
+------------------------------------------------------------
 local notificationLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/laagginq/ui-libraries/main/xaxas-notification/src.lua"))()
 
 local function notifytext(text, rgb, dur)
@@ -60,6 +66,9 @@ local function alertnotif() playSound(6176997734) end
 local function normalnotif() playSound(4590662766) end
 local function pnevnotif() playSound(8509804480) end
 
+------------------------------------------------------------
+-- ⚙️ Настройки ESP
+------------------------------------------------------------
 local Monster_Enabled = true
 local Battery_Enabled = true
 
@@ -68,6 +77,9 @@ local Battery_Drawings = {}
 local KnownMonsters = {}
 local KnownBatteries = {}
 
+------------------------------------------------------------
+-- 🎨 Drawing Helper
+------------------------------------------------------------
 local function safeRemove(drawing)
 	pcall(function()
 		if drawing and drawing.Remove then
@@ -110,22 +122,26 @@ local function CreateESPObject(label, color)
 	}
 end
 
+------------------------------------------------------------
+-- 👾 Monsters
+------------------------------------------------------------
 local MonsterNames = {
 	["monster"] = {label = "A-60", color = Color3.fromRGB(255, 0, 0)},
 	["monster2"] = {label = "A-120/A-200", color = Color3.fromRGB(255, 120, 0)},
 	["Spirit"] = {label = "A-100", color = Color3.fromRGB(140, 0, 255)},
 	["handdebris"] = {label = "A-250", color = Color3.fromRGB(255, 0, 0)},
-	["jack"] = {label = "A-40 (Jack)", color = Color3.fromRGB(200, 200, 200)},
+	["jack"] = {label = "A-40", color = Color3.fromRGB(200, 200, 200)},
 }
 
 local function highlight(obj, color)
+	local target = obj
+	if obj:IsA("Model") then target = obj.PrimaryPart end
 	local hl = Instance.new("Highlight")
 	hl.Name = "ESP_Highlight"
-	hl.FillTransparency = 0.35
+	hl.FillTransparency = 0.1
 	hl.OutlineTransparency = 1
 	hl.FillColor = color or Color3.fromRGB(255, 255, 255)
 	hl.Parent = obj
-	game.Debris:AddItem(hl, 5)
 end
 
 local function addMonsterESP(mon)
@@ -142,7 +158,7 @@ local function addMonsterESP(mon)
 
 	if mon.Name == "jack" then
 		notifytext("👁 A-40 detected! Highlighting lockers...", Color3.fromRGB(200,200,200), 4)
-		highlight(mon.Parent or mon, Color3.fromRGB(180,180,180))
+		highlight(mon, Color3.fromRGB(255,255,255))
 	end
 end
 
@@ -163,6 +179,9 @@ local function removeMonsterESP(mon)
 	end
 end
 
+------------------------------------------------------------
+-- 🔋 Batteries
+------------------------------------------------------------
 local function addBatteryESP(obj)
 	if KnownBatteries[obj] then return end
 	local esp = CreateESPObject("Battery", Color3.fromRGB(255, 143, 74))
@@ -184,6 +203,9 @@ local function removeBatteryESP(obj)
 	notifytext("🔋 Battery removed.", Color3.fromRGB(255,0,0), 1)
 end
 
+------------------------------------------------------------
+-- 🔍 Entity Registration
+------------------------------------------------------------
 workspace.ChildAdded:Connect(function(obj)
 	if MonsterNames[obj.Name] then
 		addMonsterESP(obj)
@@ -206,6 +228,9 @@ workspace.DescendantRemoving:Connect(function(obj)
 	end
 end)
 
+------------------------------------------------------------
+-- 🧠 ESP Tab
+------------------------------------------------------------
 local ESP_Tab = Window:CreateTab("ESP")
 ESP_Tab:CreateSection("Entities")
 
@@ -225,7 +250,11 @@ ESP_Tab:CreateToggle({
 	end
 })
 
+------------------------------------------------------------
+-- 🔁 Render Update (Monsters + Batteries)
+------------------------------------------------------------
 RunService.RenderStepped:Connect(function()
+	-- 👾 MONSTERS
 	for mon, data in pairs(Monster_Drawings) do
 		local esp = data.esp
 		if not mon or not mon.Parent then
@@ -273,6 +302,7 @@ RunService.RenderStepped:Connect(function()
 		esp.Tracer.Color = esp.Color
 	end
 
+	-- 🔋 BATTERIES
 	for obj, esp in pairs(Battery_Drawings) do
 		if not obj or not obj.Parent then
 			removeBatteryESP(obj)
