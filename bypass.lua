@@ -1,7 +1,7 @@
 -- Please remember this won't bypas insane anti cheats like HID or simple ac don't come crying to me later on.
 -- ============ SETTINGS ============
-local BlockRemotes = false -- only use if your exploit uses newcclousure or how ever the fuck you spell it
-local clientWalkSpeedBypass = true
+local BlockRemotes = true -- only use if your exploit uses newcclousure or how ever the fuck you spell it
+local clientWalkSpeedBypass = false
 local GuiDetectionBypass = true
 local InstaFlyBypass = true
 local MemCheckBypas = true
@@ -9,7 +9,7 @@ local gcInfoBypass = true
 local AntiKick = true
 local bypassLegion = true -- A popular open sourced anti cheat
 local bypassBtools = true
-local humanoidChecksBypass = true
+local humanoidChecksBypass = false
 -- ============ DESCRIPTIONS (DON'T CHANGE)============
 if game:IsLoaded() then
 local LocalPlayer = game.Players.LocalPlayer
