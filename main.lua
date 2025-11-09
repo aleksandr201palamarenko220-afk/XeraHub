@@ -349,14 +349,6 @@ RunService.RenderStepped:Connect(function()
 				or (mon:FindFirstChild("torso") and mon.torso.Position)
 		end
 
-		if mon.Name == "jack" then
-			if mon.Parent:IsA("BasePart") then
-			pos = mon.Parent.Position
-			elseif mon:IsA("Model") then
-			pos = (mon.Parent.PrimaryPart and mon.Parent.PrimaryPart.Position)
-				or (mon.Parent:FindFirstChild("torso") and mon.Parent.torso.Position)
-		end
-
 		end
 		if not pos then continue end
 
