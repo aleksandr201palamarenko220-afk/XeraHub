@@ -199,7 +199,10 @@ end)
 
 workspace.rooms.DescendantAdded:Connect(function(child)
 	if child:IsA("Model") and child.Name == "battery" then
+		task.spawn(function()
+		task.wait(0.15)
 		addBatteryESP(child)
+		end)
 	elseif MonsterNames[obj.Name] then
 		task.spawn(function()
 		task.wait(0.15)
