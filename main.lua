@@ -135,16 +135,6 @@ local MonsterNames = {
 	["jack"] = {label = "A-40", color = Color3.fromRGB(200, 200, 200)},
 }
 
-local function highlight(obj, color)
-	local target = obj
-	if obj:IsA("Model") then target = obj.PrimaryPart end
-	local hl = Instance.new("Highlight")
-	hl.FillTransparency = 0.1
-	hl.OutlineTransparency = 1
-	hl.FillColor = color or Color3.fromRGB(255, 255, 255)
-	hl.Parent = obj
-end
-
 local function addMonsterESP(mon)
 	if KnownMonsters[mon] then return end
 	local info = MonsterNames[mon.Name]
@@ -184,7 +174,6 @@ local function addBatteryESP(obj)
 	Battery_Drawings[obj] = esp
 	KnownBatteries[obj] = true
 	notifytext("🔋 Battery spawned! Grab it!", Color3.fromRGB(255,143,74), 3)
-	highlight(obj, Color3.fromRGB(255,143,74))
 	normalnotif()
 end
 
