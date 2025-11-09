@@ -20,7 +20,6 @@ PointLight.Parent = LHRP
 PointLight.Range = 60
 PointLight.Brightness = 2
 PointLight.Shadows = false
-PointLight.Name = "FakeLight"
 
 ------------------------------------------------------------
 -- 🪟 Rayfield GUI
@@ -38,20 +37,13 @@ local Window = Rayfield:CreateWindow({
 ------------------------------------------------------------
 -- 🔔 Notifications
 ------------------------------------------------------------
-local notificationLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/laagginq/ui-libraries/main/xaxas-notification/src.lua"))()
 
 local function notifytext(text, rgb, dur)
-	local notifications = notificationLibrary.new({
-		NotificationLifetime = dur or 3,
-		NotificationPosition = "Middle",
-		TextFont = Enum.Font.Jura,
-		TextColor = rgb or Color3.fromRGB(255,255,255),
-		TextSize = 25,
-		TextStrokeTransparency = 0,
-		TextStrokeColor = Color3.fromRGB(0, 0, 0),
+	Rayfield:Notify({
+  	 Title = "Xera notification",
+  	 Content = text,
+  	 Duration = dur,
 	})
-	notifications:BuildNotificationUI()
-	notifications:Notify(text)
 end
 
 local function playSound(id)
