@@ -159,7 +159,7 @@ local function addMonsterESP(mon)
 
 	if mon.Name == "jack" then
 		notifytext("👁 A-40 detected! Highlighting lockers...", Color3.fromRGB(200,200,200), 4)
-		highlight(mon, Color3.fromRGB(255,255,255))
+		highlight(mon.Parent, Color3.fromRGB(255,255,255))
 	end
 end
 
@@ -216,8 +216,8 @@ end)
 workspace.rooms.DescendantAdded:Connect(function(child)
 	if child:IsA("Model") and child.Name == "battery" then
 		addBatteryESP(child)
-	elseif child:IsA("Model") and MonsterNames[child.Name] then
-		addMonsterESP(child.Parent)
+	elseif MonsterNames[child.Name] then
+		addMonsterESP(child)
 	end	
 end)
 
@@ -347,6 +347,9 @@ RunService.RenderStepped:Connect(function()
 		elseif mon:IsA("Model") then
 			pos = (mon.PrimaryPart and mon.PrimaryPart.Position)
 				or (mon:FindFirstChild("torso") and mon.torso.Position)
+		end
+		if esp.Label == "A-40" then
+			pos = mon.Parent.PrimaryPart.Position
 		end
 		if not pos then continue end
 
