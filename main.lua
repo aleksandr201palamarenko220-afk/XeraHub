@@ -127,15 +127,13 @@ end
 ------------------------------------------------------------
 local MonsterNames = {
 	["monster"] = {label = "A-60", color = Color3.fromRGB(255, 0, 0)},
-	["monster2"] = {label = "A-120/A-200", color = Color3.fromRGB(255, 120, 0)},
+	["monster2"] = {label = "A-120/A-200", color = Color3.fromRGB(255, 255, 255)},
 	["Spirit"] = {label = "A-100", color = Color3.fromRGB(140, 0, 255)},
 	["handdebris"] = {label = "A-250", color = Color3.fromRGB(255, 0, 0)},
 	["jack"] = {label = "A-40", color = Color3.fromRGB(200, 200, 200)},
 }
 
 local function highlight(obj, color)
-	local target = obj
-	if obj:IsA("Model") then target = obj.PrimaryPart end
 	local hl = Instance.new("Highlight")
 	hl.Name = "ESP_Highlight"
 	hl.FillTransparency = 0.1
@@ -158,7 +156,7 @@ local function addMonsterESP(mon)
 
 	if mon.Name == "jack" then
 		notifytext("👁 A-40 detected! Highlighting lockers...", Color3.fromRGB(200,200,200), 4)
-		highlight(mon, Color3.fromRGB(255,255,255))
+		highlight(mon.Parent, Color3.fromRGB(255,255,255))
 	end
 end
 
@@ -262,12 +260,17 @@ RunService.RenderStepped:Connect(function()
 			continue
 		end
 
+		local target = mon
+
+		if mon.Name == "jack" then
+			target = mon.Parent
+		end
 		local pos
 		if mon:IsA("BasePart") then
-			pos = mon.Position
+			pos = Target.Position
 		elseif mon:IsA("Model") then
-			pos = (mon.PrimaryPart and mon.PrimaryPart.Position)
-				or (mon:FindFirstChild("torso") and mon.torso.Position)
+			pos = (target.PrimaryPart and target.PrimaryPart.Position)
+				or (target:FindFirstChild("torso") and target.torso.Position)
 		end
 		if not pos then continue end
 
