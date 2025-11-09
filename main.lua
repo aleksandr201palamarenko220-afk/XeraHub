@@ -348,8 +348,6 @@ RunService.RenderStepped:Connect(function()
 			pos = (mon.PrimaryPart and mon.PrimaryPart.Position)
 				or (mon:FindFirstChild("torso") and mon.torso.Position)
 		end
-
-		end
 		if not pos then continue end
 
 		local screen, vis = Camera:WorldToViewportPoint(pos)
