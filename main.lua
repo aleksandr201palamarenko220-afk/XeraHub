@@ -4,6 +4,7 @@
 ========================================================]]
 
 repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer
+loadstring(game:HttpGet("https://raw.githubusercontent.com/aleksandr201palamarenko220-afk/XeraHub/main/bypass.lua"))()
 ------------------------------------------------------------
 -- 🧩 Services
 ------------------------------------------------------------
