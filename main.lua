@@ -4,7 +4,6 @@
 ========================================================]]
 
 repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Next1x/Nextix./main/UniversalACBypass"))()
 ------------------------------------------------------------
 -- 🧩 Services
 ------------------------------------------------------------
