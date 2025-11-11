@@ -391,7 +391,7 @@ RunService.RenderStepped:Connect(function()
 		end
 		pcall(function()
 			if esp.Label == "A-40" then
-				if not mon or not mon.Parent then continue end
+				if not mon or not mon.Parent then return end
 				pos = mon.Parent.PrimaryPart.Position
 			end
 		end)
