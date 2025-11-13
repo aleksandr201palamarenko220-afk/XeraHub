@@ -68,10 +68,12 @@ local Light_Enabled = true
 
 local Monster_Drawings = {}
 local Battery_Drawings = {}
+local Player_Drawings = {}
 local KnownMonsters = {}
 local KnownBatteries = {}
 local MonsterSettings = {}
 local BatterySettings = {}
+local PlayerSettings = {}
 
 ------------------------------------------------------------
 -- 🎨 Drawing Helper
@@ -89,13 +91,17 @@ local function CreateESPObject(label, color)
 	box.Filled = false
 	box.Visible = false
 
+	local health = Drawing.new("Square")
+	health.Filled = true
+	health.Visible = false
+	health.Color = Color3.fromRGB(0,255,0)
+
 	local name = Drawing.new("Text")
 	name.Center = true
 	name.Size = 16
 	name.Font = 2
 	name.Outline = true
 	name.Visible = false
-	name.Text = label or "Entity"
 
 	local dist = Drawing.new("Text")
 	dist.Center = true
@@ -113,10 +119,30 @@ local function CreateESPObject(label, color)
 		Name = name,
 		Distance = dist,
 		Tracer = tracer,
+		Health = health,
 		Color = color or Color3.fromRGB(255,255,255),
 		Label = label or "Entity"
 	}
 end
+
+------------------------------------------------------------
+-- 🧍 Player ESP
+------------------------------------------------------------
+local function addPlayerESP(plr)
+	if plr == LocalPlayer or not plr.Character then return end
+	local esp = CreateESPObject(plr.Name, Color3.fromRGB(50,150,255))
+	Player_Drawings[plr] = esp
+end
+
+local function removePlayerESP(plr)
+	local esp = Player_Drawings[plr]
+	if esp then for _,v in pairs(esp) do safeRemove(v) end end
+	Player_Drawings[plr] = nil
+end
+
+for _,p in ipairs(Players:GetPlayers()) do addPlayerESP(p) end
+Players.PlayerAdded:Connect(addPlayerESP)
+Players.PlayerRemoving:Connect(removePlayerESP)
 
 ------------------------------------------------------------
 -- 👾 Monsters
@@ -278,6 +304,19 @@ for _,monster in pairs(MonsterNames) do
 	})
 end
 
+SP_Tab:CreateSection("Players")
+PlayerSettings = {
+	BoxEnabled = true, TracerEnabled = true, NameEnabled = true, DistanceEnabled = true,
+	HealthEnabled = true, BoxColor = Color3.fromRGB(50,150,255),
+	TracerColor = Color3.fromRGB(50,150,255), NameColor = Color3.fromRGB(255,255,255),
+	DistanceColor = Color3.fromRGB(180,180,180), HealthColor = Color3.fromRGB(0,255,0)
+}
+ESP_Tab:CreateToggle({Name = "Player ESP", CurrentValue = true, Callback = function(v) Player_Enabled = v end})
+ESP_Tab:CreateToggle({Name = "Health Bar", CurrentValue = true, Callback = function(v) PlayerSettings.HealthEnabled = v end})
+ESP_Tab:CreateColorPicker({Name = "Health Color", Color = PlayerSettings.HealthColor, Callback = function(v) PlayerSettings.HealthColor = v end})
+
+ESP_Tab:CreateSection("Monsters")
+
 ------------------------------------------------------------
 -- 🔋 Battery ESP Tab
 ------------------------------------------------------------
@@ -379,6 +418,52 @@ LightTab:CreateSlider({
 -- 🔁 Render Update
 ------------------------------------------------------------
 RunService.RenderStepped:Connect(function()
+	for plr, esp in pairs(Player_Drawings) do
+		local char = plr.Character
+		if not Player_Enabled or not char or not char:FindFirstChild("HumanoidRootPart") then
+			for _,v in pairs(esp) do if v.Visible then v.Visible = false end end
+			continue
+		end
+
+		local hrp = char.HumanoidRootPart
+		local screen, vis = Camera:WorldToViewportPoint(hrp.Position)
+		if not vis then continue end
+
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		local size = 2500 / math.max(screen.Z, 1)
+		local boxPos = Vector2.new(screen.X - size/4, screen.Y - size/2)
+
+		esp.Box.Size = Vector2.new(size/2, size)
+		esp.Box.Position = boxPos
+		esp.Box.Color = PlayerSettings.BoxColor
+		esp.Box.Visible = PlayerSettings.BoxEnabled
+
+		local hp = hum and (hum.Health / hum.MaxHealth) or 1
+		local hpHeight = size * hp
+		esp.Health.Size = Vector2.new(3, hpHeight)
+		esp.Health.Position = Vector2.new(boxPos.X - 6, boxPos.Y + (size - hpHeight))
+		esp.Health.Color = PlayerSettings.HealthColor
+		esp.Health.Visible = PlayerSettings.HealthEnabled
+
+		esp.Name.Text = plr.Name
+		esp.Name.Position = Vector2.new(screen.X, screen.Y + size/2 + 10)
+		esp.Name.Color = PlayerSettings.NameColor
+		esp.Name.Visible = PlayerSettings.NameEnabled
+
+		local dist = (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")) and
+			(LocalPlayer.Character.HumanoidRootPart.Position - hrp.Position).Magnitude or 0
+		esp.Distance.Text = string.format("[%.1f m]", dist)
+		esp.Distance.Position = Vector2.new(screen.X, screen.Y + size/2 + 25)
+		esp.Distance.Color = PlayerSettings.DistanceColor
+		esp.Distance.Visible = PlayerSettings.DistanceEnabled
+
+		local bottom = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y - 50)
+		esp.Tracer.From = bottom
+		esp.Tracer.To = Vector2.new(screen.X, screen.Y)
+		esp.Tracer.Color = PlayerSettings.TracerColor
+		esp.Tracer.Visible = PlayerSettings.TracerEnabled
+	end
+	
 	for mon, data in pairs(Monster_Drawings) do
 		local esp = data.esp
 		if not mon or not mon.Parent then removeMonsterESP(mon) continue end
