@@ -217,16 +217,11 @@ Players.PlayerRemoving:Connect(removePlayerESP)
 ------------------------------------------------------------
 -- 🔍 Entity Registration
 ------------------------------------------------------------
-workspace.ChildAdded:Connect(function(obj)
-	if MonsterNames[obj.Name] then addMonsterESP(obj) end
-end)
-
 workspace.DescendantAdded:Connect(function(child)
 	if child:IsA("Model") and child.Name == "battery" then
-		task.wait(0.2)
+		if KnownBatteries[child] then return end
 		addBatteryESP(child)
 	elseif MonsterNames[child.Name] then
-		task.wait(0.2)
 		addMonsterESP(child)
 	end
 end)
