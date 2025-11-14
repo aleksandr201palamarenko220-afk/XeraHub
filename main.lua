@@ -168,11 +168,14 @@ end
 -- 🔋 Batteries
 ------------------------------------------------------------
 local function addBatteryESP(obj)
-	if KnownBatteries[obj] then return end
+	if not obj or not obj:IsA("Model") or obj.Name ~= "battery" then return end
+	if KnownBatteries[obj] then return end  -- ← Двойная защита
+
 	local esp = CreateESPObject("Battery", Color3.fromRGB(255, 143, 74))
 	Battery_Drawings[obj] = esp
 	KnownBatteries[obj] = true
-	notifytext("🔋 Battery spawned! Grab it!", Color3.fromRGB(255,143,74), 3)
+
+	notifytext("Battery spawned! Grab it!", Color3.fromRGB(255,143,74), 3)
 	normalnotif()
 end
 
