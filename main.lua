@@ -1,86 +1,731 @@
---[[======================================================  XERA HUB (Obfuscated)  ======================================================]]
-repeat task.wait()until game:IsLoaded()and game:GetService("Players").LocalPlayer;local a,b,c,d,e,f,g,h=unpack,loadstring,game,task,math,table,string,char;local i=j=k=l=m=n=o=p=q=r=s=t=u=v=w=x=y=z=0
-local function A(B,C)D=E(F(G(H(I(J(K(L(M(N(O(P(Q(R(S(T(U(V(W(X(Y(Z(0x1,0x2,0x3,0x4,0x5,0x6,0x7,0x8,0x9,0xA,0xB,0xC,0xD,0xE,0xF,0x10)))))))))))))))end
-local function _(B)return C(D(E(F(G(H(I(J(K(L(M(N(O(P(Q(R(S(T(U(V(W(X(Y(Z(B))))))))))))))))))))))))))end
-local aa=_([[Xera Hub]]);local ab=_([[by Nobody]]);local ac=_([[https://sirius.menu/rayfield]]);local ad=game:GetService("Players")
-local ae=game:GetService("RunService");local af=workspace.CurrentCamera;local ag=ad.LocalPlayer;local ah=ag.Character or ag.CharacterAdded:Wait()
-local ai=ah:WaitForChild("HumanoidRootPart",10);local aj=Instance.new("PointLight");aj.Name="ESP_Light";aj.Range=60;aj.Brightness=2;aj.Shadows=false;aj.Enabled=true;if ai then aj.Parent=ai end
-local ak=loadstring(game:HttpGet(ac))();local al=ak:CreateWindow({Name=aa,LoadingTitle=aa,LoadingSubtitle=ab,Theme="Dark Blue",ToggleUIKeybind="U",})
-local function am(an,ao,ap)local aq=_(an)local ar=ao and Color3.fromRGB(ao[1],ao[2],ao[3])or Color3.fromRGB(255,255,255)
-al:Notify({Title=_([[Xera notification]]),Content=aq,Duration=ap or 3,})end
-local function as(at)local au=Instance.new("Sound",ag:WaitForChild("PlayerGui"));au.SoundId="rbxassetid://"..at;au.Volume=0.1;au:Play();game.Debris:AddItem(au,3)end
-local function av()as(6176997734)end;local function aw()as(4590662766)end;local ax=true;local ay=true;local az=true;local aA=true
-local aB,aC,aD,aE,aF,aG,aH={},{},{},{},{},{},{}
-local function aI(aJ)if aJ and aJ.Remove then pcall(aJ.Remove,aJ)end end
-local function aK(aL,aM)local aN=Drawing.new("Square");aN.Filled=false;aN.Visible=false;local aO=Drawing.new("Text");aO.Center=true;aO.Size=16;aO.Font=2;aO.Outline=true;aO.Visible=false;aO.Text=aL or"Entity"
-local aP=Drawing.new("Text");aP.Center=true;aP.Size=14;aP.Font=2;aP.Outline=true;aP.Visible=false;local aQ=Drawing.new("Line");aQ.Thickness=1.5;aQ.Visible=false;local aR=Drawing.new("Square");aR.Filled=true;aR.Visible=false;aR.Color=Color3.fromRGB(0,255,0)
-return{Box=aN,Name=aO,Distance=aP,Tracer=aQ,Health=aR,Color=aM or Color3.fromRGB(255,255,255),Label=aL or"Entity"}end
-local aS={[_([[monster]])]={label=_([[A-60]]),color=Color3.fromRGB(255,0,0)},[_([[monster2]])]={label=_([[A-120/A-200]]),color=Color3.fromRGB(255,120,0)},
-[_([[Spirit]])]={label=_([[A-100]]),color=Color3.fromRGB(140,0,255)},[_([[handdebris]])]={label=_([[A-250]]),color=Color3.fromRGB(255,0,0)},
-[_([[jack]])]={label=_([[A-40]]),color=Color3.fromRGB(200,200,200)}}
-local function aT(aU)if aD[aU]then return end;local aV=aS[aU.Name];if not aV then return end;local aW=aK(aV.label,aV.color);aB[aU]={esp=aW,info=aV};aD[aU]=true;av();am("⚠ Monster spawned: "..aV.label,{aV.color:ToRGB()},3)end
-local function aX(aU)local aY=aB[aU];if not aY then return end;local aW,aV=aY.esp,aY.info;for _,aZ in pairs(aW)do aI(aZ)end;aB[aU]=nil;aD[aU]=nil;aw();am("✅ Monster despawned: "..(aV and aV.label or"?"),{100,255,100},2)end
-local function a_(a$)if aE[a$]then return end;if a$.Name~="battery"or a$.Parent.Parent.Name~="rooms"then return end;local a0=aK("Battery",Color3.fromRGB(255,143,74));aC[a$]=a0;aE[a$]=true;am("🔋 Battery spawned! Grab it!",{255,143,74},3);aw()end
-local function ba(a$)local a0=aC[a$];if not a0 then return end;for _,aZ in pairs(a0)do aI(aZ)end;aC[a$]=nil;aE[a$]=nil;am("🔋 Battery gone.",{255,143,74},3);aw()end
-local function bb(bc)if bc==ag then return end;if aF[bc]then return end;aF[bc]=aK(bc.Name,Color3.fromRGB(50,150,255))end
-local function bd(bc)local a0=aF[bc];if a0 then for _,aZ in pairs(a0)do aI(aZ)end end;aF[bc]=nil end
-for _,be in ipairs(ad:GetPlayers())do bb(be)end;ad.PlayerAdded:Connect(bb);ad.PlayerRemoving:Connect(bd)
-workspace.ChildAdded:Connect(function(bf)if aS[bf.Name]then aT(bf)end end)
-workspace.DescendantAdded:Connect(function(bg)if bg:IsA("Model")and bg.Name=="battery"and not aE[bg]then a_(bg)elseif bg.Name=="jack"then aT(bg)end end)
-workspace.DescendantRemoving:Connect(function(bg)if aS[bg.Name]then aX(bg)elseif bg.Name=="battery"and aE[bg]then ba(bg)end end)
-local bh=al:CreateTab("ESP");local bi={};bi.TracerEnabled=true;bi.NameEnabled=true;bi.DistanceEnabled=true;bi.BoxEnabled=true;bi.HealthEnabled=true
-bi.BoxColor=Color3.fromRGB(50,150,255);bi.TracerColor=Color3.fromRGB(50,150,255);bi.NameColor=Color3.fromRGB(255,255,255);bi.DistanceColor=Color3.fromRGB(180,180,180);bi.HealthColor=Color3.fromRGB(0,255,0)
-bh:CreateSection("Players");bh:CreateToggle({Name="Player ESP",CurrentValue=true,Callback=function(bj)aA=bj end})
-bh:CreateToggle({Name="Player Box",CurrentValue=true,Callback=function(bj)bi.BoxEnabled=bj end})
-bh:CreateColorPicker({Name="Player BoxColor",Color=bi.BoxColor,Callback=function(bk)bi.BoxColor=bk end})
-bh:CreateToggle({Name="Player Tracer",CurrentValue=true,Callback=function(bj)bi.TracerEnabled=bj end})
-bh:CreateColorPicker({Name="Player TracerColor",Color=bi.TracerColor,Callback=function(bk)bi.TracerColor=bk end})
-bh:CreateToggle({Name="Player Name",CurrentValue=true,Callback=function(bj)bi.NameEnabled=bj end})
-bh:CreateColorPicker({Name="Player NameColor",Color=bi.NameColor,Callback=function(bk)bi.NameColor=bk end})
-bh:CreateToggle({Name="Player Distance",CurrentValue=true,Callback=function(bj)bi.DistanceEnabled=bj end})
-bh:CreateColorPicker({Name="Player DistanceColor",Color=bi.DistanceColor,Callback=function(bk)bi.DistanceColor=bk end})
-bh:CreateToggle({Name="Player Health Bar",CurrentValue=true,Callback=function(bj)bi.HealthEnabled=bj end})
-bh:CreateColorPicker({Name="Player HealthColor",Color=bi.HealthColor,Callback=function(bk)bi.HealthColor=bk end})
-bh:CreateSection("Monsters");bh:CreateToggle({Name="Monster ESP",CurrentValue=true,Callback=function(bj)ax=bj end})
-for bl,bm in pairs(aS)do bh:CreateSection(bm.label);aG[bm.label]={TracerEnabled=true,NameEnabled=true,DistanceEnabled=true,BoxEnabled=true,BoxColor=bm.color,TracerColor=bm.color,NameColor=bm.color,DistanceColor=Color3.fromRGB(180,180,180)}
-bh:CreateToggle({Name=bm.label.." Box",CurrentValue=true,Callback=function(bn)aG[bm.label].BoxEnabled=bn end})
-bh:CreateColorPicker({Name=bm.label.." BoxColor",Color=bm.color,Callback=function(bo)aG[bm.label].BoxColor=bo end})
-bh:CreateToggle({Name=bm.label.." Tracer",CurrentValue=true,Callback=function(bn)aG[bm.label].TracerEnabled=bn end})
-bh:CreateColorPicker({Name=bm.label.." TracerColor",Color=bm.color,Callback=function(bo)aG[bm.label].TracerColor=bo end})
-bh:CreateToggle({Name=bm.label.." Name",CurrentValue=true,Callback=function(bn)aG[bm.label].NameEnabled=bn end})
-bh:CreateColorPicker({Name=bm.label.." NameColor",Color=bm.color,Callback=function(bo)aG[bm.label].NameColor=bo end})
-bh:CreateToggle({Name=bm.label.." Distance",CurrentValue=true,Callback=function(bn)aG[bm.label].DistanceEnabled=bn end})
-bh:CreateColorPicker({Name=bm.label.." DistanceColor",Color=aG[bm.label].DistanceColor,Callback=function(bo)aG[bm.label].DistanceColor=bo end})end
-local bp=al:CreateTab("Battery ESP");bp:CreateSection("Battery Settings");local bq={TracerEnabled=true,NameEnabled=true,DistanceEnabled=true,BoxEnabled=true,Color=Color3.fromRGB(255,143,74),DistanceColor=Color3.fromRGB(180,180,180)}
-bp:CreateToggle({Name="Battery ESP Enabled",CurrentValue=true,Callback=function(br)ay=br end})
-bp:CreateToggle({Name="Box",CurrentValue=true,Callback=function(br)bq.BoxEnabled=br end})
-bp:CreateToggle({Name="Tracer",CurrentValue=true,Callback=function(br)bq.TracerEnabled=br end})
-bp:CreateToggle({Name="Name",CurrentValue=true,Callback=function(br)bq.NameEnabled=br end})
-bp:CreateToggle({Name="Distance",CurrentValue=true,Callback=function(br)bq.DistanceEnabled=br end})
-bp:CreateColorPicker({Name="Battery Color",Color=bq.Color,Callback=function(bs)bq.Color=bs end})
-bp:CreateColorPicker({Name="Battery DistanceColor",Color=bq.DistanceColor,Callback=function(bs)bq.DistanceColor=bs end})
-local bt=al:CreateTab("Lighting");bt:CreateSection("PointLight")
-bt:CreateToggle({Name="Enable Light",CurrentValue=true,Callback=function(bu)az=bu;aj.Enabled=bu end})
-bt:CreateSlider({Name="Light Brightness",Range={0,5},Increment=0.1,CurrentValue=2,Callback=function(bu)aj.Brightness=bu end})
-bt:CreateSlider({Name="Light Range",Range={10,100},Increment=5,CurrentValue=60,Callback=function(bu)aj.Range=bu end})
-ae.RenderStepped:Connect(function()
-for bv,bw in pairs(aF)do local bx=bv.Character;if not aA or not bx or not bx:FindFirstChild("HumanoidRootPart")then for _,by in pairs(bw)do by.Visible=false end continue end;local bz=bx.HumanoidRootPart;local bA,bB=af:WorldToViewportPoint(bz.Position);if not bB then for _,by in pairs(bw)do by.Visible=false end continue end
-local bC=2500/math.max(bA.Z,1);local bD=Vector2.new(bA.X-bC/4,bA.Y-bC/2);bw.Box.Size=Vector2.new(bC/2,bC);bw.Box.Position=bD;bw.Box.Color=bi.BoxColor;bw.Box.Visible=bi.BoxEnabled
-local bE=bx:FindFirstChildOfClass("Humanoid");local bF=1;if bE and bE.MaxHealth>0 then bF=math.clamp(bE.Health/bE.MaxHealth,0,1)end
-if bw.Health then local bG=bC*bF;bw.Health.Size=Vector2.new(3,bG);bw.Health.Position=Vector2.new(bD.X-6,bD.Y+(bC-bG));bw.Health.Color=bi.HealthColor;bw.Health.Visible=bi.HealthEnabled end
-bw.Name.Text=bv.Name;bw.Name.Position=Vector2.new(bA.X,bA.Y+bC/2+10);bw.Name.Color=bi.NameColor;bw.Name.Visible=bi.NameEnabled
-if ag.Character and ag.Character:FindFirstChild("HumanoidRootPart")then local bH=(ag.Character.HumanoidRootPart.Position-bz.Position).Magnitude;bw.Distance.Text=string.format("[%.1f m]",bH);bw.Distance.Position=Vector2.new(bA.X,bA.Y+bC/2+25);bw.Distance.Color=bi.DistanceColor;bw.Distance.Visible=bi.DistanceEnabled end
-local bI=Vector2.new(af.ViewportSize.X/2,af.ViewportSize.Y-50);bw.Tracer.From=bI;bw.Tracer.To=Vector2.new(bA.X,bA.Y);bw.Tracer.Color=bi.TracerColor;bw.Tracer.Visible=bi.TracerEnabled end
-for bJ,bK in pairs(aB)do local bL=bK.esp;if not bJ or not bJ.Parent then aX(bJ)continue end;local bM;if bJ:IsA("BasePart")then bM=bJ.Position elseif bJ:IsA("Model")then bM=(bJ.PrimaryPart and bJ.PrimaryPart.Position)or(bJ:FindFirstChild("torso")and bJ.torso.Position)end
-if bL.Label=="A-40"then pcall(function()if bJ.Parent.PrimaryPart then bM=bJ.Parent.PrimaryPart.Position end end)end;if not bM then continue end;local bN,bO=af:WorldToViewportPoint(bM);local bP=bO and ax
-local bQ=aG[bL.Label]or{};bL.Box.Visible=bP and bQ.BoxEnabled;bL.Name.Visible=bP and bQ.NameEnabled;bL.Distance.Visible=bP and bQ.DistanceEnabled;bL.Tracer.Visible=bP and bQ.TracerEnabled;if not bP then continue end
-local bC=2500/math.max(bN.Z,1);bL.Box.Size=Vector2.new(bC/2,bC);bL.Box.Position=Vector2.new(bN.X-bC/4,bN.Y-bC/2);bL.Box.Color=bQ.BoxColor or bK.info.color
-bL.Name.Text=bL.Label;bL.Name.Position=Vector2.new(bN.X,bN.Y+bC/2+10);bL.Name.Color=bQ.NameColor or bK.info.color
-if ag.Character and ag.Character:FindFirstChild("HumanoidRootPart")then local bH=(ag.Character.HumanoidRootPart.Position-bM).Magnitude;bL.Distance.Text=string.format("[%.1f m]",bH);bL.Distance.Position=Vector2.new(bN.X,bN.Y+bC/2+25);bL.Distance.Color=bQ.DistanceColor or Color3.fromRGB(180,180,180)end
-local bI=Vector2.new(af.ViewportSize.X/2,af.ViewportSize.Y-50);bL.Tracer.From=bI;bL.Tracer.To=Vector2.new(bN.X,bN.Y);bL.Tracer.Color=bQ.TracerColor or bK.info.color end
-for bR,bS in pairs(aC)do if not bR or not bR.Parent then continue end;local bM=bR:IsA("BasePart")and bR.Position or(bR.PrimaryPart and bR.PrimaryPart.Position);if not bM then continue end
-local bN,bO=af:WorldToViewportPoint(bM);local bP=bO and ay;bS.Box.Visible=bP and bq.BoxEnabled;bS.Name.Visible=bP and bq.NameEnabled;bS.Distance.Visible=bP and bq.DistanceEnabled;bS.Tracer.Visible=bP and bq.TracerEnabled;if not bP then continue end
-local bT=800/math.max(bN.Z,1);bS.Box.Size=Vector2.new(bT/2,bT/2);bS.Box.Position=Vector2.new(bN.X-bT/4,bN.Y-bT/4);bS.Box.Color=bq.Color
-bS.Name.Text="Battery";bS.Name.Position=Vector2.new(bN.X,bN.Y+bT/2+8);bS.Name.Color=bq.Color
-if ag.Character and ag.Character:FindFirstChild("HumanoidRootPart")then local bH=(ag.Character.HumanoidRootPart.Position-bM).Magnitude;bS.Distance.Text=string.format("[%.1f m]",bH);bS.Distance.Position=Vector2.new(bN.X,bN.Y+bT/2+20);bS.Distance.Color=bq.DistanceColor end
-local bI=Vector2.new(af.ViewportSize.X/2,af.ViewportSize.Y-50);bS.Tracer.From=bI;bS.Tracer.To=Vector2.new(bN.X,bN.Y);bS.Tracer.Color=bq.Color end end)
+--[[====================================================== ⚙️ XERA HUB — MONSTER, PLAYER & BATTERY ESP (V0.4 BASED ON V0.3) by Nobody ========================================================]]
+repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer
+
+------------------------------------------------------------
+-- 🧩 Services
+------------------------------------------------------------
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local LHRP = Character:WaitForChild("HumanoidRootPart", 10)
+
+local PointLight = Instance.new("PointLight")
+PointLight.Name = "ESP_Light"
+PointLight.Range = 60
+PointLight.Brightness = 2
+PointLight.Shadows = false
+PointLight.Enabled = true
+if LHRP then PointLight.Parent = LHRP end
+
+------------------------------------------------------------
+-- 🪟 Rayfield GUI
+------------------------------------------------------------
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Window = Rayfield:CreateWindow({
+	Name = "Xera Hub",
+	LoadingTitle = "Xera Hub",
+	LoadingSubtitle = "by Nobody",
+	Theme = "Dark Blue",
+	ToggleUIKeybind = "U",
+})
+
+------------------------------------------------------------
+-- 🔔 Notifications
+------------------------------------------------------------
+local function notifytext(text, rgb, dur)
+	Rayfield:Notify({
+		Title = "Xera notification",
+		Content = text,
+		Duration = dur or 3,
+	})
+end
+
+local function playSound(id)
+	local s = Instance.new("Sound", LocalPlayer:WaitForChild("PlayerGui"))
+	s.SoundId = "rbxassetid://" .. id
+	s.Volume = 0.1
+	s:Play()
+	game.Debris:AddItem(s, 3)
+end
+
+local function alertnotif() playSound(6176997734) end
+local function normalnotif() playSound(4590662766) end
+
+------------------------------------------------------------
+-- ⚙️ Настройки ESP
+------------------------------------------------------------
+local Monster_Enabled = true
+local Battery_Enabled = true
+local Light_Enabled = true
+local Player_Enabled = true
+
+local Monster_Drawings = {}
+local Battery_Drawings = {}
+local KnownMonsters = {}
+local KnownBatteries = {}
+
+local MonsterSettings = {}
+local BatterySettings = {}
+
+local Player_Drawings = {}
+local PlayerSettings = {}
+
+------------------------------------------------------------
+-- 🎨 Drawing Helper
+------------------------------------------------------------
+local function safeRemove(drawing)
+	pcall(function()
+		if drawing and drawing.Remove then
+			drawing:Remove()
+		end
+	end)
+end
+
+local function CreateESPObject(label, color)
+	local box = Drawing.new("Square")
+	box.Filled = false
+	box.Visible = false
+
+	local name = Drawing.new("Text")
+	name.Center = true
+	name.Size = 16
+	name.Font = 2
+	name.Outline = true
+	name.Visible = false
+	name.Text = label or "Entity"
+
+	local dist = Drawing.new("Text")
+	dist.Center = true
+	dist.Size = 14
+	dist.Font = 2
+	dist.Outline = true
+	dist.Visible = false
+
+	local tracer = Drawing.new("Line")
+	tracer.Thickness = 1.5
+	tracer.Visible = false
+
+	local health = Drawing.new("Square")
+	health.Filled = true
+	health.Visible = false
+	health.Color = Color3.fromRGB(0, 255, 0)
+
+	return {
+		Box = box,
+		Name = name,
+		Distance = dist,
+		Tracer = tracer,
+		Health = health,
+		Color = color or Color3.fromRGB(255,255,255),
+		Label = label or "Entity"
+	}
+end
+
+------------------------------------------------------------
+-- 👾 Monsters
+------------------------------------------------------------
+local MonsterNames = {
+	["monster"] = {label = "A-60", color = Color3.fromRGB(255, 0, 0)},
+	["monster2"] = {label = "A-120/A-200", color = Color3.fromRGB(255, 120, 0)},
+	["Spirit"] = {label = "A-100", color = Color3.fromRGB(140, 0, 255)},
+	["handdebris"] = {label = "A-250", color = Color3.fromRGB(255, 0, 0)},
+	["jack"] = {label = "A-40", color = Color3.fromRGB(200, 200, 200)},
+}
+
+local function addMonsterESP(mon)
+	if KnownMonsters[mon] then return end
+	local info = MonsterNames[mon.Name]
+	if not info then return end
+
+	local esp = CreateESPObject(info.label, info.color)
+	Monster_Drawings[mon] = {esp = esp, info = info}
+	KnownMonsters[mon] = true
+
+	alertnotif()
+	notifytext("⚠ Monster spawned: " .. info.label, info.color, 3)
+end
+
+local function removeMonsterESP(mon)
+	local data = Monster_Drawings[mon]
+	if not data then return end
+	local esp, info = data.esp, data.info
+
+	for _,v in pairs(esp) do
+		safeRemove(v)
+	end
+	Monster_Drawings[mon] = nil
+	KnownMonsters[mon] = nil
+
+	normalnotif()
+	notifytext("✅ Monster despawned: " .. (info and info.label or "?"), Color3.fromRGB(100,255,100), 2)
+end
+
+------------------------------------------------------------
+-- 🔋 Batteries
+------------------------------------------------------------
+local function addBatteryESP(obj)
+	pcall(function()
+		if KnownBatteries[obj] then return end
+		if obj.Name ~= "battery" then return end
+		if obj.Parent.Parent.Name ~= "rooms" then return end
+		local esp = CreateESPObject("Battery", Color3.fromRGB(255, 143, 74))
+		Battery_Drawings[obj] = esp
+		KnownBatteries[obj] = true
+		notifytext("🔋 Battery spawned! Grab it!", Color3.fromRGB(255,143,74), 3)
+		normalnotif()
+	end)
+end
+
+local function removeBatteryESP(obj)
+	local esp = Battery_Drawings[obj]
+	if not esp then return end
+	if not KnownBatteries[obj] then return end
+	for _,v in pairs(esp) do
+		safeRemove(v)
+	end
+	Battery_Drawings[obj] = nil
+	notifytext("🔋 Battery gone.", Color3.fromRGB(255,143,74), 3)
+	normalnotif()
+	KnownBatteries[obj] = nil
+end
+
+------------------------------------------------------------
+-- 🧍 Player ESP
+------------------------------------------------------------
+local function addPlayerESP(plr)
+	if plr == LocalPlayer then return end
+	if Player_Drawings[plr] then return end
+	local esp = CreateESPObject(plr.Name, Color3.fromRGB(50,150,255))
+	Player_Drawings[plr] = esp
+end
+
+local function removePlayerESP(plr)
+	local esp = Player_Drawings[plr]
+	if esp then
+		for _,v in pairs(esp) do
+			safeRemove(v)
+		end
+	end
+	Player_Drawings[plr] = nil
+end
+
+for _,p in ipairs(Players:GetPlayers()) do
+	addPlayerESP(p)
+end
+Players.PlayerAdded:Connect(addPlayerESP)
+Players.PlayerRemoving:Connect(removePlayerESP)
+
+------------------------------------------------------------
+-- 🔍 Entity Registration
+------------------------------------------------------------
+workspace.ChildAdded:Connect(function(obj)
+	if MonsterNames[obj.Name] then addMonsterESP(obj) end
+end)
+
+workspace.DescendantAdded:Connect(function(child)
+	if child:IsA("Model") and child.Name == "battery" and not KnownBatteries[child] then
+		addBatteryESP(child)
+	elseif child.Name == "jack" then
+		addMonsterESP(child)
+	end
+end)
+
+workspace.DescendantRemoving:Connect(function(obj)
+	if MonsterNames[obj.Name] then
+		removeMonsterESP(obj)
+	elseif obj.Name == "battery" and KnownBatteries[obj] then
+		removeBatteryESP(obj)
+	end
+end)
+
+------------------------------------------------------------
+-- 🧠 ESP Tabs
+------------------------------------------------------------
+local ESP_Tab = Window:CreateTab("ESP")
+
+------------------------------------------------------------
+-- 👤 Player ESP UI
+------------------------------------------------------------
+ESP_Tab:CreateSection("Players")
+
+PlayerSettings = {
+	TracerEnabled = true,
+	NameEnabled = true,
+	DistanceEnabled = true,
+	BoxEnabled = true,
+	HealthEnabled = true,
+
+	BoxColor = Color3.fromRGB(50,150,255),
+	TracerColor = Color3.fromRGB(50,150,255),
+	NameColor = Color3.fromRGB(255,255,255),
+	DistanceColor = Color3.fromRGB(180,180,180),
+	HealthColor = Color3.fromRGB(0,255,0),
+}
+
+ESP_Tab:CreateToggle({
+	Name = "Player ESP",
+	CurrentValue = true,
+	Callback = function(v)
+		Player_Enabled = v
+	end
+})
+
+ESP_Tab:CreateToggle({
+	Name = "Player Box",
+	CurrentValue = true,
+	Callback = function(Value)
+		PlayerSettings.BoxEnabled = Value
+	end
+})
+
+ESP_Tab:CreateColorPicker({
+	Name = "Player BoxColor",
+	Color = PlayerSettings.BoxColor,
+	Callback = function(Value)
+		PlayerSettings.BoxColor = Value
+	end
+})
+
+ESP_Tab:CreateToggle({
+	Name = "Player Tracer",
+	CurrentValue = true,
+	Callback = function(Value)
+		PlayerSettings.TracerEnabled = Value
+	end
+})
+
+ESP_Tab:CreateColorPicker({
+	Name = "Player TracerColor",
+	Color = PlayerSettings.TracerColor,
+	Callback = function(Value)
+		PlayerSettings.TracerColor = Value
+	end
+})
+
+ESP_Tab:CreateToggle({
+	Name = "Player Name",
+	CurrentValue = true,
+	Callback = function(Value)
+		PlayerSettings.NameEnabled = Value
+	end
+})
+
+ESP_Tab:CreateColorPicker({
+	Name = "Player NameColor",
+	Color = PlayerSettings.NameColor,
+	Callback = function(Value)
+		PlayerSettings.NameColor = Value
+	end
+})
+
+ESP_Tab:CreateToggle({
+	Name = "Player Distance",
+	CurrentValue = true,
+	Callback = function(Value)
+		PlayerSettings.DistanceEnabled = Value
+	end
+})
+
+ESP_Tab:CreateColorPicker({
+	Name = "Player DistanceColor",
+	Color = PlayerSettings.DistanceColor,
+	Callback = function(Value)
+		PlayerSettings.DistanceColor = Value
+	end
+})
+
+ESP_Tab:CreateToggle({
+	Name = "Player Health Bar",
+	CurrentValue = true,
+	Callback = function(Value)
+		PlayerSettings.HealthEnabled = Value
+	end
+})
+
+ESP_Tab:CreateColorPicker({
+	Name = "Player HealthColor",
+	Color = PlayerSettings.HealthColor,
+	Callback = function(Value)
+		PlayerSettings.HealthColor = Value
+	end
+})
+
+------------------------------------------------------------
+-- 👾 Monsters ESP UI
+------------------------------------------------------------
+ESP_Tab:CreateSection("Monsters")
+
+ESP_Tab:CreateToggle({
+	Name = "Monster ESP",
+	CurrentValue = true,
+	Callback = function(v)
+		Monster_Enabled = v
+	end
+})
+
+for _,monster in pairs(MonsterNames) do
+	ESP_Tab:CreateSection(monster.label)
+
+	MonsterSettings[monster.label] = {
+		TracerEnabled = true,
+		NameEnabled = true,
+		DistanceEnabled = true,
+		BoxEnabled = true,
+		BoxColor = monster.color,
+		TracerColor = monster.color,
+		NameColor = monster.color,
+		DistanceColor = Color3.fromRGB(180,180,180),
+	}
+
+	ESP_Tab:CreateToggle({
+		Name = monster.label.." Box",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].BoxEnabled = Value
+		end
+	})
+
+	ESP_Tab:CreateColorPicker({
+		Name = monster.label.." BoxColor",
+		Color = monster.color,
+		Callback = function(Value)
+			MonsterSettings[monster.label].BoxColor = Value
+		end
+	})
+
+	ESP_Tab:CreateToggle({
+		Name = monster.label.." Tracer",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].TracerEnabled = Value
+		end
+	})
+
+	ESP_Tab:CreateColorPicker({
+		Name = monster.label.." TracerColor",
+		Color = monster.color,
+		Callback = function(Value)
+			MonsterSettings[monster.label].TracerColor = Value
+		end
+	})
+
+	ESP_Tab:CreateToggle({
+		Name = monster.label.." Name",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].NameEnabled = Value
+		end
+	})
+
+	ESP_Tab:CreateColorPicker({
+		Name = monster.label.." NameColor",
+		Color = monster.color,
+		Callback = function(Value)
+			MonsterSettings[monster.label].NameColor = Value
+		end
+	})
+
+	ESP_Tab:CreateToggle({
+		Name = monster.label.." Distance",
+		CurrentValue = true,
+		Callback = function(Value)
+			MonsterSettings[monster.label].DistanceEnabled = Value
+		end
+	})
+
+	ESP_Tab:CreateColorPicker({
+		Name = monster.label.." DistanceColor",
+		Color = MonsterSettings[monster.label].DistanceColor,
+		Callback = function(Value)
+			MonsterSettings[monster.label].DistanceColor = Value
+		end
+	})
+end
+
+------------------------------------------------------------
+-- 🔋 Battery ESP Tab
+------------------------------------------------------------
+local BatteryTab = Window:CreateTab("Battery ESP")
+BatteryTab:CreateSection("Battery Settings")
+
+BatterySettings = {
+	TracerEnabled = true,
+	NameEnabled = true,
+	DistanceEnabled = true,
+	BoxEnabled = true,
+	Color = Color3.fromRGB(255,143,74),
+	DistanceColor = Color3.fromRGB(180,180,180),
+}
+
+BatteryTab:CreateToggle({
+	Name = "Battery ESP Enabled",
+	CurrentValue = true,
+	Callback = function(Value)
+		Battery_Enabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Box",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.BoxEnabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Tracer",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.TracerEnabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Name",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.NameEnabled = Value
+	end
+})
+
+BatteryTab:CreateToggle({
+	Name = "Distance",
+	CurrentValue = true,
+	Callback = function(Value)
+		BatterySettings.DistanceEnabled = Value
+	end
+})
+
+BatteryTab:CreateColorPicker({
+	Name = "Battery Color",
+	Color = BatterySettings.Color,
+	Callback = function(Value)
+		BatterySettings.Color = Value
+	end
+})
+
+BatteryTab:CreateColorPicker({
+	Name = "Battery DistanceColor",
+	Color = BatterySettings.DistanceColor,
+	Callback = function(Value)
+		BatterySettings.DistanceColor = Value
+	end
+})
+
+------------------------------------------------------------
+-- 💡 Light Control
+------------------------------------------------------------
+local LightTab = Window:CreateTab("Lighting")
+LightTab:CreateSection("PointLight")
+
+LightTab:CreateToggle({
+	Name = "Enable Light",
+	CurrentValue = true,
+	Callback = function(Value)
+		Light_Enabled = Value
+		PointLight.Enabled = Value
+	end
+})
+
+LightTab:CreateSlider({
+	Name = "Light Brightness",
+	Range = {0, 5},
+	Increment = 0.1,
+	CurrentValue = 2,
+	Callback = function(Value)
+		PointLight.Brightness = Value
+	end
+})
+
+LightTab:CreateSlider({
+	Name = "Light Range",
+	Range = {10, 100},
+	Increment = 5,
+	CurrentValue = 60,
+	Callback = function(Value)
+		PointLight.Range = Value
+	end
+})
+
+------------------------------------------------------------
+-- 🔁 Render Update
+------------------------------------------------------------
+RunService.RenderStepped:Connect(function()
+	--------------------------------------------------------
+	-- 👤 PLAYERS
+	--------------------------------------------------------
+	for plr, esp in pairs(Player_Drawings) do
+		local char = plr.Character
+		if not Player_Enabled or not char or not char:FindFirstChild("HumanoidRootPart") then
+			esp.Box.Visible = false
+			esp.Name.Visible = false
+			esp.Distance.Visible = false
+			esp.Tracer.Visible = false
+			if esp.Health then esp.Health.Visible = false end
+			continue
+		end
+
+		local hrp = char.HumanoidRootPart
+		local screen, vis = Camera:WorldToViewportPoint(hrp.Position)
+		if not vis then
+			esp.Box.Visible = false
+			esp.Name.Visible = false
+			esp.Distance.Visible = false
+			esp.Tracer.Visible = false
+			if esp.Health then esp.Health.Visible = false end
+			continue
+		end
+
+		local size = 2500 / math.max(screen.Z, 1)
+		local boxPos = Vector2.new(screen.X - size/4, screen.Y - size/2)
+
+		esp.Box.Size = Vector2.new(size/2, size)
+		esp.Box.Position = boxPos
+		esp.Box.Color = PlayerSettings.BoxColor
+		esp.Box.Visible = PlayerSettings.BoxEnabled
+
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		local hpRatio = 1
+		if hum and hum.MaxHealth > 0 then
+			hpRatio = math.clamp(hum.Health / hum.MaxHealth, 0, 1)
+		end
+
+		if esp.Health then
+			local hpHeight = size * hpRatio
+			esp.Health.Size = Vector2.new(3, hpHeight)
+			esp.Health.Position = Vector2.new(boxPos.X - 6, boxPos.Y + (size - hpHeight))
+			esp.Health.Color = PlayerSettings.HealthColor
+			esp.Health.Visible = PlayerSettings.HealthEnabled
+		end
+
+		esp.Name.Text = plr.Name
+		esp.Name.Position = Vector2.new(screen.X, screen.Y + size/2 + 10)
+		esp.Name.Color = PlayerSettings.NameColor
+		esp.Name.Visible = PlayerSettings.NameEnabled
+
+		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			local dist = (LocalPlayer.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
+			esp.Distance.Text = string.format("[%.1f m]", dist)
+			esp.Distance.Position = Vector2.new(screen.X, screen.Y + size/2 + 25)
+			esp.Distance.Color = PlayerSettings.DistanceColor
+			esp.Distance.Visible = PlayerSettings.DistanceEnabled
+		else
+			esp.Distance.Visible = false
+		end
+
+		local bottom = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y - 50)
+		esp.Tracer.From = bottom
+		esp.Tracer.To = Vector2.new(screen.X, screen.Y)
+		esp.Tracer.Color = PlayerSettings.TracerColor
+		esp.Tracer.Visible = PlayerSettings.TracerEnabled
+	end
+
+	--------------------------------------------------------
+	-- 👾 MONSTERS
+	--------------------------------------------------------
+	for mon, data in pairs(Monster_Drawings) do
+		local esp = data.esp
+		if not mon or not mon.Parent then
+			removeMonsterESP(mon)
+			continue
+		end
+
+		local pos
+		if mon:IsA("BasePart") then
+			pos = mon.Position
+		elseif mon:IsA("Model") then
+			pos = (mon.PrimaryPart and mon.PrimaryPart.Position)
+				or (mon:FindFirstChild("torso") and mon.torso.Position)
+		end
+
+		pcall(function()
+			if esp.Label == "A-40" then
+				if not mon or not mon.Parent then return end
+				if mon.Parent.PrimaryPart then
+					pos = mon.Parent.PrimaryPart.Position
+				end
+			end
+		end)
+
+		if not pos then continue end
+
+		local screen, vis = Camera:WorldToViewportPoint(pos)
+		local visible = vis and Monster_Enabled
+		local settings = MonsterSettings[esp.Label] or {}
+
+		esp.Box.Visible = visible and settings.BoxEnabled
+		esp.Name.Visible = visible and settings.NameEnabled
+		esp.Distance.Visible = visible and settings.DistanceEnabled
+		esp.Tracer.Visible = visible and settings.TracerEnabled
+
+		if not visible then continue end
+
+		local size = 2500 / math.max(screen.Z, 1)
+		esp.Box.Size = Vector2.new(size/2, size)
+		esp.Box.Position = Vector2.new(screen.X - size/4, screen.Y - size/2)
+		esp.Box.Color = settings.BoxColor or data.info.color
+
+		esp.Name.Text = esp.Label
+		esp.Name.Position = Vector2.new(screen.X, screen.Y + size/2 + 10)
+		esp.Name.Color = settings.NameColor or data.info.color
+
+		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			local dist = (LocalPlayer.Character.HumanoidRootPart.Position - pos).Magnitude
+			esp.Distance.Text = string.format("[%.1f m]", dist)
+			esp.Distance.Position = Vector2.new(screen.X, screen.Y + size/2 + 25)
+			esp.Distance.Color = settings.DistanceColor or Color3.fromRGB(180,180,180)
+		end
+
+		local bottom = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y - 50)
+		esp.Tracer.From = bottom
+		esp.Tracer.To = Vector2.new(screen.X, screen.Y)
+		esp.Tracer.Color = settings.TracerColor or data.info.color
+	end
+
+	--------------------------------------------------------
+	-- 🔋 BATTERIES
+	--------------------------------------------------------
+	for obj, esp in pairs(Battery_Drawings) do
+		if not obj or not obj.Parent then
+			continue
+		end
+
+		local pos = obj:IsA("BasePart") and obj.Position or (obj.PrimaryPart and obj.PrimaryPart.Position)
+		if not pos then continue end
+
+		local screen, vis = Camera:WorldToViewportPoint(pos)
+		local visible = vis and Battery_Enabled
+
+		esp.Box.Visible = visible and BatterySettings.BoxEnabled
+		esp.Name.Visible = visible and BatterySettings.NameEnabled
+		esp.Distance.Visible = visible and BatterySettings.DistanceEnabled
+		esp.Tracer.Visible = visible and BatterySettings.TracerEnabled
+
+		if not visible then continue end
+
+		local size = 800 / math.max(screen.Z, 1)
+		esp.Box.Size = Vector2.new(size/2, size/2)
+		esp.Box.Position = Vector2.new(screen.X - size/4, screen.Y - size/4)
+		esp.Box.Color = BatterySettings.Color
+
+		esp.Name.Text = "Battery"
+		esp.Name.Position = Vector2.new(screen.X, screen.Y + size/2 + 8)
+		esp.Name.Color = BatterySettings.Color
+
+		if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			local dist = (LocalPlayer.Character.HumanoidRootPart.Position - pos).Magnitude
+			esp.Distance.Text = string.format("[%.1f m]", dist)
+			esp.Distance.Position = Vector2.new(screen.X, screen.Y + size/2 + 20)
+			esp.Distance.Color = BatterySettings.DistanceColor
+		end
+
+		local bottom = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y - 50)
+		esp.Tracer.From = bottom
+		esp.Tracer.To = Vector2.new(screen.X, screen.Y)
+		esp.Tracer.Color = BatterySettings.Color
+	end
+end)
